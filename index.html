@@ -16,30 +16,27 @@
     }
     .panel {
       background: rgba(255,255,255,0.10);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.27);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.18);
-      padding: 36px 28px 28px 28px;
-      width: 340px;
-      max-width: 95vw;
+      padding: 24px 12px 18px 12px;
+      width: 98vw;
+      max-width: 370px;
       transition: box-shadow 0.3s;
-      will-change: transform;
-    }
-    .panel:active {
-      box-shadow: 0 4px 16px 0 rgba(31,38,135,0.27);
+      margin: 0 auto;
     }
     h2 {
       color: #fff;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       letter-spacing: 1px;
       font-weight: 700;
-      font-size: 1.5em;
+      font-size: 1.2em;
       text-shadow: 0 2px 8px #0006;
     }
     .row {
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -47,21 +44,21 @@
     .label {
       color: #fff;
       font-size: 1em;
-      width: 110px;
+      width: 90px;
       text-align: right;
-      margin-right: 10px;
+      margin-right: 8px;
       opacity: 0.85;
       text-shadow: 0 1px 2px #0004;
     }
     input, select {
-      padding: 8px 10px;
-      border-radius: 8px;
+      padding: 7px 8px;
+      border-radius: 7px;
       border: 1px solid #222a;
       font-size: 1em;
       background: rgba(255,255,255,0.15);
       color: #fff;
       outline: none;
-      width: 150px;
+      width: 120px;
       transition: border 0.2s;
     }
     input:focus, select:focus {
@@ -71,12 +68,12 @@
     button {
       width: 100%;
       padding: 12px 0;
-      margin-top: 10px;
+      margin-top: 8px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
       color: #fff;
-      font-size: 1.1em;
+      font-size: 1.05em;
       font-weight: 600;
       letter-spacing: 1px;
       cursor: pointer;
@@ -89,49 +86,28 @@
       transform: scale(0.97);
       background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
     }
-    .glow {
-      animation: glow 1.5s infinite alternate;
-    }
-    @keyframes glow {
-      from { box-shadow: 0 0 8px #00f2fe88, 0 0 16px #4facfe44; }
-      to   { box-shadow: 0 0 24px #00f2fecc, 0 0 32px #4facfe88; }
-    }
     .status {
-      margin-top: 18px;
-      min-height: 32px;
+      margin-top: 14px;
+      min-height: 28px;
       color: #fff;
       font-size: 1em;
       text-align: center;
       word-break: break-word;
       text-shadow: 0 1px 2px #0006;
     }
-    .spinner {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      border: 3px solid #fff3;
-      border-top: 3px solid #00f2fe;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg);}
-      100% { transform: rotate(360deg);}
-    }
     @media (max-width: 400px) {
-      .panel { padding: 18px 4vw; }
-      .label { font-size: 0.95em; width: 90px;}
-      input, select { width: 100px; font-size: 0.95em;}
+      .panel { padding: 10px 2vw; }
+      .label { font-size: 0.95em; width: 70px;}
+      input, select { width: 80px; font-size: 0.95em;}
     }
   </style>
 </head>
 <body>
-  <div class="panel" id="panel">
-    <h2>Bybit Trading Panel</h2>
+  <div class="panel">
+    <h2>Bybit Trading</h2>
     <div class="row">
       <span class="label">Symbol:</span>
-      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" autocomplete="off" />
+      <input id="symbol" placeholder="BTCUSDT" value="BTCUSDT" autocomplete="off" />
     </div>
     <div class="row">
       <span class="label">Side:</span>
@@ -141,37 +117,25 @@
       </select>
     </div>
     <div class="row">
-      <span class="label">Order Type:</span>
+      <span class="label">Type:</span>
       <select id="orderType" onchange="togglePriceInput()">
         <option value="Market">Market</option>
         <option value="Limit">Limit</option>
       </select>
     </div>
     <div class="row">
-      <span class="label">Quantity:</span>
+      <span class="label">Qty:</span>
       <input id="qty" type="number" placeholder="Quantity" min="0.001" step="0.001" autocomplete="off" />
     </div>
     <div class="row" id="priceRow" style="display:none;">
-      <span class="label">Limit Price:</span>
+      <span class="label">Price:</span>
       <input id="price" type="number" placeholder="Limit Price" step="0.01" autocomplete="off" />
     </div>
-    <button class="glow" onclick="placeOrder()">Place Order</button>
+    <button onclick="placeOrder()">Place Order</button>
     <button style="margin-top:8px;" onclick="getPrice()">Get Price</button>
     <div class="status" id="status"></div>
   </div>
   <script>
-    // 3D tilt effect
-    const panel = document.getElementById('panel');
-    panel.addEventListener('mousemove', (e) => {
-      const rect = panel.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width/2;
-      const y = e.clientY - rect.top - rect.height/2;
-      panel.style.transform = `rotateY(${x/30}deg) rotateX(${-y/30}deg) scale(1.01)`;
-    });
-    panel.addEventListener('mouseleave', () => {
-      panel.style.transform = '';
-    });
-
     const tg = window.Telegram.WebApp;
     tg.ready();
 
@@ -180,13 +144,9 @@
       document.getElementById('priceRow').style.display = orderType === 'Limit' ? '' : 'none';
     }
 
-    function showStatus(msg, loading=false, error=false) {
+    function showStatus(msg, error=false) {
       const status = document.getElementById('status');
-      if (loading) {
-        status.innerHTML = `<span class="spinner"></span><br>${msg}`;
-      } else {
-        status.innerHTML = `<span style="color:${error ? '#ff4e4e':'#00f2fe'}">${msg}</span>`;
-      }
+      status.innerHTML = `<span style="color:${error ? '#ff4e4e':'#00f2fe'}">${msg}</span>`;
     }
 
     function placeOrder() {
@@ -197,13 +157,13 @@
       const price = document.getElementById('price').value;
 
       if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
-        showStatus('Invalid symbol format.', false, true); return;
+        showStatus('Invalid symbol.', true); return;
       }
       if (!qty || Number(qty) <= 0) {
-        showStatus('Enter a valid quantity.', false, true); return;
+        showStatus('Enter a valid quantity.', true); return;
       }
       if (orderType === 'Limit' && (!price || Number(price) <= 0)) {
-        showStatus('Enter a valid limit price.', false, true); return;
+        showStatus('Enter a valid price.', true); return;
       }
 
       tg.sendData(JSON.stringify({
@@ -214,19 +174,19 @@
         orderType,
         price: orderType === 'Limit' ? price : undefined
       }));
-      showStatus('Order sent to bot...', true);
+      showStatus('Order sent to bot...');
     }
 
     function getPrice() {
       const symbol = document.getElementById('symbol').value.trim().toUpperCase();
       if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
-        showStatus('Invalid symbol format.', false, true); return;
+        showStatus('Invalid symbol.', true); return;
       }
       tg.sendData(JSON.stringify({
         action: 'getPrice',
         symbol
       }));
-      showStatus('Price request sent to bot...', true);
+      showStatus('Price request sent to bot...');
     }
   </script>
 </body>
