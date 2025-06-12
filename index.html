@@ -1,151 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bybit Trading Mini App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bybit Trading App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    :root {
+      --primary: #00f2fe;
+      --primary-dark: #4facfe;
+      --background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.15);
+      --text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      margin: 0;
+      padding: 24px;
+      background: var(--background);
+      font-family: 'Segoe UI', Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 24px; /* Add padding to avoid touching edges */
-      box-sizing: border-box;
+      min-height: 100vh;
     }
 
     .panel {
-      background: rgba(255,255,255,0.10);
-      border-radius: 18px;
-      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.27);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.18);
-      padding: 24px;
       width: 100%;
-      max-width: 480px; /* wider panel for better spacing */
-      height: 100%;
-      max-height: 100%;
-      overflow-y: auto; /* allow scrolling if content exceeds height */
-      box-sizing: border-box;
+      max-width: 460px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 28px 24px;
     }
 
     h2 {
-      color: #fff;
-      margin-bottom: 14px;
-      letter-spacing: 1px;
-      font-weight: 700;
-      font-size: 1.4em;
-      text-shadow: 0 2px 8px #0006;
       text-align: center;
+      color: var(--text);
+      font-size: 1.6em;
+      margin-bottom: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
-    .row {
-      margin-bottom: 14px;
+    .form-group {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      margin-bottom: 18px;
     }
 
-    .label {
-      color: #fff;
-      font-size: 1em;
-      width: 90px;
-      text-align: right;
-      margin-right: 8px;
-      opacity: 0.85;
-      text-shadow: 0 1px 2px #0004;
+    label {
+      font-size: 0.95em;
+      color: #ffffffcc;
+      margin-bottom: 6px;
+      font-weight: 500;
     }
 
     input, select {
-      padding: 7px 8px;
-      border-radius: 7px;
-      border: 1px solid #222a;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #ffffff22;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
       font-size: 1em;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
+      transition: all 0.2s ease;
       outline: none;
-      width: 120px;
-      transition: border 0.2s;
     }
 
     input:focus, select:focus {
-      border: 1.5px solid #00f2fe;
-      background: rgba(255,255,255,0.22);
+      border: 1.5px solid var(--primary);
+      background: rgba(255, 255, 255, 0.18);
     }
 
     button {
       width: 100%;
-      padding: 12px 0;
-      margin-top: 8px;
+      padding: 14px 0;
       border: none;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
-      color: #fff;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: white;
       font-size: 1.05em;
       font-weight: 600;
-      letter-spacing: 1px;
+      margin-top: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 8px #00f2fe44;
-      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4);
+      transition: transform 0.15s ease;
     }
 
     button:active {
       transform: scale(0.97);
-      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
     }
 
     .status {
-      margin-top: 14px;
-      min-height: 28px;
-      color: #fff;
-      font-size: 1em;
+      margin-top: 16px;
       text-align: center;
-      word-break: break-word;
-      text-shadow: 0 1px 2px #0006;
+      color: var(--text);
+      font-size: 0.95em;
+      min-height: 22px;
     }
 
-    @media (max-width: 400px) {
-      .panel { padding: 16px 4vw; }
-      .label { font-size: 0.95em; width: 70px; }
-      input, select { width: 80px; font-size: 0.95em; }
+    @media (max-width: 420px) {
+      .panel {
+        padding: 20px 16px;
+        border-radius: 16px;
+      }
+
+      h2 {
+        font-size: 1.4em;
+      }
+
+      input, select {
+        font-size: 0.95em;
+      }
+
+      button {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
 <body>
   <div class="panel">
     <h2>Bybit Trading</h2>
-    <div class="row">
-      <span class="label">Symbol:</span>
-      <input id="symbol" placeholder="BTCUSDT" value="BTCUSDT" autocomplete="off" />
+
+    <div class="form-group">
+      <label for="symbol">Symbol</label>
+      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" />
     </div>
-    <div class="row">
-      <span class="label">Side:</span>
+
+    <div class="form-group">
+      <label for="side">Side</label>
       <select id="side">
         <option value="Buy">Buy</option>
         <option value="Sell">Sell</option>
       </select>
     </div>
-    <div class="row">
-      <span class="label">Type:</span>
+
+    <div class="form-group">
+      <label for="orderType">Order Type</label>
       <select id="orderType" onchange="togglePriceInput()">
         <option value="Market">Market</option>
         <option value="Limit">Limit</option>
       </select>
     </div>
-    <div class="row">
-      <span class="label">Qty:</span>
-      <input id="qty" type="number" placeholder="Quantity" min="0.001" step="0.001" autocomplete="off" />
+
+    <div class="form-group">
+      <label for="qty">Quantity</label>
+      <input id="qty" type="number" placeholder="Amount" step="0.001" />
     </div>
-    <div class="row" id="priceRow" style="display:none;">
-      <span class="label">Price:</span>
-      <input id="price" type="number" placeholder="Limit Price" step="0.01" autocomplete="off" />
+
+    <div class="form-group" id="priceRow" style="display:none;">
+      <label for="price">Limit Price</label>
+      <input id="price" type="number" placeholder="Limit price" step="0.01" />
     </div>
+
     <button onclick="placeOrder()">Place Order</button>
-    <button style="margin-top:8px;" onclick="getPrice()">Get Price</button>
+    <button onclick="getPrice()">Get Price</button>
+
     <div class="status" id="status"></div>
   </div>
 
@@ -154,53 +172,48 @@
     tg.ready();
 
     function togglePriceInput() {
-      const orderType = document.getElementById('orderType').value;
-      document.getElementById('priceRow').style.display = orderType === 'Limit' ? '' : 'none';
+      const type = document.getElementById("orderType").value;
+      document.getElementById("priceRow").style.display = type === "Limit" ? "block" : "none";
     }
 
-    function showStatus(msg, error=false) {
-      const status = document.getElementById('status');
-      status.innerHTML = `<span style="color:${error ? '#ff4e4e':'#00f2fe'}">${msg}</span>`;
+    function showStatus(message, isError = false) {
+      const status = document.getElementById("status");
+      status.innerHTML = `<span style="color:${isError ? '#ff4e4e' : '#00f2fe'}">${message}</span>`;
     }
 
     function placeOrder() {
-      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
-      const side = document.getElementById('side').value;
-      const qty = document.getElementById('qty').value;
-      const orderType = document.getElementById('orderType').value;
-      const price = document.getElementById('price').value;
+      const symbol = document.getElementById("symbol").value.trim().toUpperCase();
+      const side = document.getElementById("side").value;
+      const qty = document.getElementById("qty").value;
+      const type = document.getElementById("orderType").value;
+      const price = document.getElementById("price").value;
 
-      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
-        showStatus('Invalid symbol.', true); return;
-      }
-      if (!qty || Number(qty) <= 0) {
-        showStatus('Enter a valid quantity.', true); return;
-      }
-      if (orderType === 'Limit' && (!price || Number(price) <= 0)) {
-        showStatus('Enter a valid price.', true); return;
-      }
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) return showStatus("Invalid symbol.", true);
+      if (!qty || Number(qty) <= 0) return showStatus("Enter a valid quantity.", true);
+      if (type === "Limit" && (!price || Number(price) <= 0)) return showStatus("Enter a valid price.", true);
 
       tg.sendData(JSON.stringify({
-        action: 'placeOrder',
+        action: "placeOrder",
         symbol,
         side,
         qty,
-        orderType,
-        price: orderType === 'Limit' ? price : undefined
+        orderType: type,
+        price: type === "Limit" ? price : undefined
       }));
-      showStatus('Order sent to bot...');
+
+      showStatus("Order sent to bot...");
     }
 
     function getPrice() {
-      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
-      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
-        showStatus('Invalid symbol.', true); return;
-      }
+      const symbol = document.getElementById("symbol").value.trim().toUpperCase();
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) return showStatus("Invalid symbol.", true);
+
       tg.sendData(JSON.stringify({
-        action: 'getPrice',
+        action: "getPrice",
         symbol
       }));
-      showStatus('Price request sent to bot...');
+
+      showStatus("Requesting price...");
     }
   </script>
 </body>
