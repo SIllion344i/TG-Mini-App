@@ -5,142 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root {
-      --primary: #00f2fe;
-      --primary-dark: #4facfe;
-      --background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.15);
-      --text: #ffffff;
-      --highlight: #00f2fe;
-    }
-    * { box-sizing: border-box; }
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 24px;
-      background: var(--background);
-      font-family: 'Segoe UI', Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      background-color: #121212;
+      color: #fff;
+      padding: 20px;
     }
+
     .panel {
-      width: 100%;
-      max-width: 340px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 18px 12px;
-      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
     }
+
+    .profile-pic {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 16px auto;
+      object-fit: cover;
+      border: 2px solid #00f2fe;
+    }
+
     .title {
-      font-size: 1.2em;
-      font-weight: bold;
-      color: white;
       text-align: center;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
+      font-size: 24px;
+      margin-bottom: 8px;
     }
+
     .beta {
-      background-color: #1e3a8a;
-      color: #60a5fa;
-      font-size: 0.75em;
+      background-color: #00f2fe;
+      color: #000;
       padding: 2px 6px;
       border-radius: 6px;
-      font-weight: 600;
+      font-size: 12px;
       margin-left: 6px;
+      vertical-align: middle;
     }
-    .profile-pic {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 12px auto;
-    }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .stat-box {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 14px;
-      color: white;
-      font-size: 0.95em;
-    }
-    .stat-box span {
-      display: block;
-      font-weight: 600;
-      font-size: 1.1em;
-      color: var(--highlight);
-    }
-    h2 {
-      text-align: center;
-      color: var(--text);
-      font-size: 1.1em;
-      margin-bottom: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
+
     .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    label {
-      font-size: 0.95em;
-      color: #ffffffcc;
+
+    .form-group label {
+      display: block;
       margin-bottom: 6px;
-      font-weight: 500;
+      color: #ccc;
     }
-    input, select {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #ffffff22;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text);
-      font-size: 1em;
-      transition: all 0.2s ease;
-      outline: none;
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      background-color: #2c2c2c;
+      color: #fff;
     }
-    input:focus, select:focus {
-      border: 1.5px solid var(--primary);
-      background: rgba(255, 255, 255, 0.18);
-    }
+
     button {
       width: 100%;
-      padding: 14px 0;
+      padding: 12px;
+      background-color: #00f2fe;
+      color: #000;
       border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-      color: white;
-      font-size: 1.05em;
-      font-weight: 600;
-      margin-top: 12px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4);
-      transition: transform 0.15s ease;
+      margin-bottom: 12px;
     }
-    button:active { transform: scale(0.97); }
+
+    button:hover {
+      background-color: #00c3d3;
+    }
+
     .status {
-      margin-top: 16px;
       text-align: center;
-      color: var(--text);
-      font-size: 0.95em;
-      min-height: 22px;
+      font-size: 14px;
+      margin-bottom: 12px;
     }
-    @media (max-width: 420px) {
-      .panel { padding: 10px 4vw; border-radius: 16px; }
-      h2 { font-size: 1em; }
-      input, select { font-size: 0.95em; }
-      button { font-size: 1em; }
+
+    .stat-box {
+      background-color: #2a2a2a;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
   </style>
 </head>
@@ -214,9 +177,6 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    let bybitApiKey = null;
-    let bybitApiSecret = null;
-
     function togglePriceInput() {
       const type = document.getElementById("orderType").value;
       document.getElementById("priceRow").style.display = type === "Limit" ? "block" : "none";
@@ -235,55 +195,22 @@
         document.getElementById('modal-status').style.color = "#ff4e4e";
         return;
       }
-      bybitApiKey = key;
-      bybitApiSecret = secret;
+
       document.getElementById('modal-status').textContent = "Fetching balance...";
       document.getElementById('modal-status').style.color = "#00f2fe";
-      // Fetch balance
+
       try {
-        const balance = await fetchBybitBalance(key, secret);
-        document.getElementById('wallet-balance').textContent = "$" + balance;
+        const res = await fetch('/api/bybit');
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Failed");
+
+        document.getElementById('wallet-balance').textContent = "$" + Number(json.balance).toLocaleString(undefined, {minimumFractionDigits:2});
         document.getElementById('modal-status').textContent = "Balance updated!";
         document.getElementById('modal-status').style.color = "#00f2fe";
       } catch (e) {
         document.getElementById('modal-status').textContent = "Failed: " + e.message;
         document.getElementById('modal-status').style.color = "#ff4e4e";
       }
-    }
-
-    // Bybit API v5 (Unified Account) USDT balance fetch
-    async function fetchBybitBalance(apiKey, apiSecret) {
-      // Prepare signature
-      const recvWindow = "5000";
-      const timestamp = Date.now().toString();
-      const paramStr = "accountType=UNIFIED";
-      const signStr = timestamp + apiKey + recvWindow + paramStr;
-      const encoder = new TextEncoder();
-      const keyData = encoder.encode(apiSecret);
-      const msgUint8 = encoder.encode(signStr);
-      // HMAC SHA256
-      const cryptoKey = await window.crypto.subtle.importKey(
-        "raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
-      );
-      const signature = Array.from(
-        new Uint8Array(await window.crypto.subtle.sign("HMAC", cryptoKey, msgUint8))
-      ).map(b => b.toString(16).padStart(2, "0")).join("");
-      // Call Bybit API
-      const url = "https://api.bybit.com/v5/account/wallet-balance?accountType=UNIFIED";
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          "X-BAPI-API-KEY": apiKey,
-          "X-BAPI-SIGN": signature,
-          "X-BAPI-TIMESTAMP": timestamp,
-          "X-BAPI-RECV-WINDOW": recvWindow
-        }
-      });
-      const data = await res.json();
-      if (data.retCode !== 0) throw new Error(data.retMsg || "API error");
-      // Find USDT balance
-      const usdt = data.result.list[0].totalEquity;
-      return Number(usdt).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
     }
 
     function placeOrder() {
