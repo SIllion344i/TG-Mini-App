@@ -37,34 +37,13 @@
       padding: 18px 12px;
       position: relative;
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-    .menu-icon {
-      width: 28px;
-      height: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      cursor: pointer;
-      gap: 6px;
-    }
-    .menu-icon div {
-      height: 3px;
-      background-color: white;
-      border-radius: 2px;
-      width: 100%;
-    }
     .title {
-      font-size: 1.1em;
+      font-size: 1.2em;
       font-weight: bold;
       color: white;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
     .beta {
       background-color: #1e3a8a;
@@ -73,12 +52,15 @@
       padding: 2px 6px;
       border-radius: 6px;
       font-weight: 600;
+      margin-left: 6px;
     }
     .profile-pic {
       width: 32px;
       height: 32px;
       border-radius: 50%;
       object-fit: cover;
+      display: block;
+      margin: 0 auto 12px auto;
     }
     .stat-grid {
       display: grid;
@@ -102,8 +84,8 @@
     h2 {
       text-align: center;
       color: var(--text);
-      font-size: 1.3em;
-      margin-bottom: 18px;
+      font-size: 1.1em;
+      margin-bottom: 14px;
       font-weight: 700;
       letter-spacing: 1px;
     }
@@ -154,55 +136,9 @@
       font-size: 0.95em;
       min-height: 22px;
     }
-    /* Modal styles */
-    .modal-bg {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.55);
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal {
-      background: #181c2a;
-      border-radius: 16px;
-      padding: 24px 18px 18px 18px;
-      box-shadow: 0 4px 24px #000a;
-      width: 95vw;
-      max-width: 320px;
-      color: #fff;
-      position: relative;
-      z-index: 11;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .modal label { color: #b8eaff; }
-    .modal input {
-      background: #23263a;
-      border: 1px solid #333a;
-      color: #fff;
-    }
-    .modal .close-btn {
-      position: absolute;
-      top: 8px; right: 12px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.3em;
-      cursor: pointer;
-    }
-    .modal .modal-status {
-      font-size: 0.95em;
-      min-height: 18px;
-      color: #00f2fe;
-      text-align: center;
-      margin-top: 4px;
-    }
     @media (max-width: 420px) {
       .panel { padding: 10px 4vw; border-radius: 16px; }
-      h2 { font-size: 1.1em; }
+      h2 { font-size: 1em; }
       input, select { font-size: 0.95em; }
       button { font-size: 1em; }
     }
@@ -210,15 +146,20 @@
 </head>
 <body>
   <div class="panel">
-    <!-- TOP BAR -->
-    <div class="header">
-      <div class="menu-icon" onclick="openApiModal()">
-        <div></div>
-        <div></div>
-      </div>
-      <div class="title">Grok 3 <span class="beta">beta</span></div>
-      <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
+    <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
+    <div class="title">Grok 3 <span class="beta">beta</span></div>
+
+    <!-- API KEY/SECRET FIELDS -->
+    <div class="form-group">
+      <label for="api-key">Bybit API Key</label>
+      <input id="api-key" type="text" placeholder="Enter your Bybit API Key" autocomplete="off" />
     </div>
+    <div class="form-group">
+      <label for="api-secret">Bybit API Secret</label>
+      <input id="api-secret" type="password" placeholder="Enter your Bybit API Secret" autocomplete="off" />
+    </div>
+    <button onclick="saveApiKeys()">Save & Fetch Balance</button>
+    <div class="status" id="modal-status"></div>
 
     <!-- WALLET STATS -->
     <div class="stat-box" style="margin-bottom: 12px;">
@@ -269,35 +210,12 @@
     <div class="status" id="status"></div>
   </div>
 
-  <!-- Modal for API Key/Secret -->
-  <div id="api-modal-bg" class="modal-bg" style="display:none;">
-    <div class="modal">
-      <button class="close-btn" onclick="closeApiModal()">&times;</button>
-      <label for="api-key">Bybit API Key</label>
-      <input id="api-key" type="text" placeholder="Enter your Bybit API Key" autocomplete="off" />
-      <label for="api-secret">Bybit API Secret</label>
-      <input id="api-secret" type="password" placeholder="Enter your Bybit API Secret" autocomplete="off" />
-      <button onclick="saveApiKeys()">Save & Fetch Balance</button>
-      <div class="modal-status" id="modal-status"></div>
-    </div>
-  </div>
-
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
     let bybitApiKey = null;
     let bybitApiSecret = null;
-
-    function openApiModal() {
-      document.getElementById('api-modal-bg').style.display = 'flex';
-      document.getElementById('modal-status').textContent = '';
-      document.getElementById('api-key').value = bybitApiKey || '';
-      document.getElementById('api-secret').value = bybitApiSecret || '';
-    }
-    function closeApiModal() {
-      document.getElementById('api-modal-bg').style.display = 'none';
-    }
 
     function togglePriceInput() {
       const type = document.getElementById("orderType").value;
@@ -326,7 +244,7 @@
         const balance = await fetchBybitBalance(key, secret);
         document.getElementById('wallet-balance').textContent = "$" + balance;
         document.getElementById('modal-status').textContent = "Balance updated!";
-        setTimeout(closeApiModal, 900);
+        document.getElementById('modal-status').style.color = "#00f2fe";
       } catch (e) {
         document.getElementById('modal-status').textContent = "Failed: " + e.message;
         document.getElementById('modal-status').style.color = "#ff4e4e";
@@ -338,9 +256,6 @@
       // Prepare signature
       const recvWindow = "5000";
       const timestamp = Date.now().toString();
-      const params = {
-        accountType: "UNIFIED"
-      };
       const paramStr = "accountType=UNIFIED";
       const signStr = timestamp + apiKey + recvWindow + paramStr;
       const encoder = new TextEncoder();
