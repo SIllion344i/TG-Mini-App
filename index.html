@@ -14,11 +14,7 @@
       --text: #ffffff;
       --highlight: #00f2fe;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 24px;
@@ -29,41 +25,39 @@
       justify-content: center;
       min-height: 100vh;
     }
-
     .panel {
       width: 100%;
-      max-width: 460px;
+      max-width: 340px;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 20px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      padding: 28px 24px;
+      padding: 18px 12px;
+      position: relative;
     }
-
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-
     .menu-icon {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       cursor: pointer;
+      gap: 6px;
     }
-
     .menu-icon div {
       height: 3px;
       background-color: white;
       border-radius: 2px;
+      width: 100%;
     }
-
     .title {
       font-size: 1.1em;
       font-weight: bold;
@@ -72,7 +66,6 @@
       align-items: center;
       gap: 6px;
     }
-
     .beta {
       background-color: #1e3a8a;
       color: #60a5fa;
@@ -81,21 +74,18 @@
       border-radius: 6px;
       font-weight: 600;
     }
-
     .profile-pic {
       width: 32px;
       height: 32px;
       border-radius: 50%;
       object-fit: cover;
     }
-
     .stat-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 20px;
     }
-
     .stat-box {
       background-color: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
@@ -103,36 +93,31 @@
       color: white;
       font-size: 0.95em;
     }
-
     .stat-box span {
       display: block;
       font-weight: 600;
       font-size: 1.1em;
       color: var(--highlight);
     }
-
     h2 {
       text-align: center;
       color: var(--text);
-      font-size: 1.6em;
-      margin-bottom: 24px;
+      font-size: 1.3em;
+      margin-bottom: 18px;
       font-weight: 700;
       letter-spacing: 1px;
     }
-
     .form-group {
       display: flex;
       flex-direction: column;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
-
     label {
       font-size: 0.95em;
       color: #ffffffcc;
       margin-bottom: 6px;
       font-weight: 500;
     }
-
     input, select {
       padding: 10px 14px;
       border-radius: 10px;
@@ -143,12 +128,10 @@
       transition: all 0.2s ease;
       outline: none;
     }
-
     input:focus, select:focus {
       border: 1.5px solid var(--primary);
       background: rgba(255, 255, 255, 0.18);
     }
-
     button {
       width: 100%;
       padding: 14px 0;
@@ -163,11 +146,7 @@
       box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4);
       transition: transform 0.15s ease;
     }
-
-    button:active {
-      transform: scale(0.97);
-    }
-
+    button:active { transform: scale(0.97); }
     .status {
       margin-top: 16px;
       text-align: center;
@@ -175,24 +154,57 @@
       font-size: 0.95em;
       min-height: 22px;
     }
-
+    /* Modal styles */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.55);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #181c2a;
+      border-radius: 16px;
+      padding: 24px 18px 18px 18px;
+      box-shadow: 0 4px 24px #000a;
+      width: 95vw;
+      max-width: 320px;
+      color: #fff;
+      position: relative;
+      z-index: 11;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal label { color: #b8eaff; }
+    .modal input {
+      background: #23263a;
+      border: 1px solid #333a;
+      color: #fff;
+    }
+    .modal .close-btn {
+      position: absolute;
+      top: 8px; right: 12px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.3em;
+      cursor: pointer;
+    }
+    .modal .modal-status {
+      font-size: 0.95em;
+      min-height: 18px;
+      color: #00f2fe;
+      text-align: center;
+      margin-top: 4px;
+    }
     @media (max-width: 420px) {
-      .panel {
-        padding: 20px 16px;
-        border-radius: 16px;
-      }
-
-      h2 {
-        font-size: 1.4em;
-      }
-
-      input, select {
-        font-size: 0.95em;
-      }
-
-      button {
-        font-size: 1em;
-      }
+      .panel { padding: 10px 4vw; border-radius: 16px; }
+      h2 { font-size: 1.1em; }
+      input, select { font-size: 0.95em; }
+      button { font-size: 1em; }
     }
   </style>
 </head>
@@ -200,7 +212,7 @@
   <div class="panel">
     <!-- TOP BAR -->
     <div class="header">
-      <div class="menu-icon">
+      <div class="menu-icon" onclick="openApiModal()">
         <div></div>
         <div></div>
       </div>
@@ -210,7 +222,7 @@
 
     <!-- WALLET STATS -->
     <div class="stat-box" style="margin-bottom: 12px;">
-      Wallet Balance: <span>$128,631.25</span>
+      Wallet Balance: <span id="wallet-balance">$128,631.25</span>
     </div>
     <div class="stat-grid">
       <div class="stat-box">
@@ -226,12 +238,10 @@
 
     <!-- ORIGINAL FORM -->
     <h2>Bybit Trading</h2>
-
     <div class="form-group">
       <label for="symbol">Symbol</label>
       <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" />
     </div>
-
     <div class="form-group">
       <label for="side">Side</label>
       <select id="side">
@@ -239,7 +249,6 @@
         <option value="Sell">Sell</option>
       </select>
     </div>
-
     <div class="form-group">
       <label for="orderType">Order Type</label>
       <select id="orderType" onchange="togglePriceInput()">
@@ -247,26 +256,48 @@
         <option value="Limit">Limit</option>
       </select>
     </div>
-
     <div class="form-group">
       <label for="qty">Quantity</label>
       <input id="qty" type="number" placeholder="Amount" step="0.001" />
     </div>
-
     <div class="form-group" id="priceRow" style="display:none;">
       <label for="price">Limit Price</label>
       <input id="price" type="number" placeholder="Limit price" step="0.01" />
     </div>
-
     <button onclick="placeOrder()">Place Order</button>
     <button onclick="getPrice()">Get Price</button>
-
     <div class="status" id="status"></div>
+  </div>
+
+  <!-- Modal for API Key/Secret -->
+  <div id="api-modal-bg" class="modal-bg" style="display:none;">
+    <div class="modal">
+      <button class="close-btn" onclick="closeApiModal()">&times;</button>
+      <label for="api-key">Bybit API Key</label>
+      <input id="api-key" type="text" placeholder="Enter your Bybit API Key" autocomplete="off" />
+      <label for="api-secret">Bybit API Secret</label>
+      <input id="api-secret" type="password" placeholder="Enter your Bybit API Secret" autocomplete="off" />
+      <button onclick="saveApiKeys()">Save & Fetch Balance</button>
+      <div class="modal-status" id="modal-status"></div>
+    </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
+
+    let bybitApiKey = null;
+    let bybitApiSecret = null;
+
+    function openApiModal() {
+      document.getElementById('api-modal-bg').style.display = 'flex';
+      document.getElementById('modal-status').textContent = '';
+      document.getElementById('api-key').value = bybitApiKey || '';
+      document.getElementById('api-secret').value = bybitApiSecret || '';
+    }
+    function closeApiModal() {
+      document.getElementById('api-modal-bg').style.display = 'none';
+    }
 
     function togglePriceInput() {
       const type = document.getElementById("orderType").value;
@@ -276,6 +307,68 @@
     function showStatus(message, isError = false) {
       const status = document.getElementById("status");
       status.innerHTML = `<span style="color:${isError ? '#ff4e4e' : '#00f2fe'}">${message}</span>`;
+    }
+
+    async function saveApiKeys() {
+      const key = document.getElementById('api-key').value.trim();
+      const secret = document.getElementById('api-secret').value.trim();
+      if (!key || !secret) {
+        document.getElementById('modal-status').textContent = "Both fields required.";
+        document.getElementById('modal-status').style.color = "#ff4e4e";
+        return;
+      }
+      bybitApiKey = key;
+      bybitApiSecret = secret;
+      document.getElementById('modal-status').textContent = "Fetching balance...";
+      document.getElementById('modal-status').style.color = "#00f2fe";
+      // Fetch balance
+      try {
+        const balance = await fetchBybitBalance(key, secret);
+        document.getElementById('wallet-balance').textContent = "$" + balance;
+        document.getElementById('modal-status').textContent = "Balance updated!";
+        setTimeout(closeApiModal, 900);
+      } catch (e) {
+        document.getElementById('modal-status').textContent = "Failed: " + e.message;
+        document.getElementById('modal-status').style.color = "#ff4e4e";
+      }
+    }
+
+    // Bybit API v5 (Unified Account) USDT balance fetch
+    async function fetchBybitBalance(apiKey, apiSecret) {
+      // Prepare signature
+      const recvWindow = "5000";
+      const timestamp = Date.now().toString();
+      const params = {
+        accountType: "UNIFIED"
+      };
+      const paramStr = "accountType=UNIFIED";
+      const signStr = timestamp + apiKey + recvWindow + paramStr;
+      const encoder = new TextEncoder();
+      const keyData = encoder.encode(apiSecret);
+      const msgUint8 = encoder.encode(signStr);
+      // HMAC SHA256
+      const cryptoKey = await window.crypto.subtle.importKey(
+        "raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+      );
+      const signature = Array.from(
+        new Uint8Array(await window.crypto.subtle.sign("HMAC", cryptoKey, msgUint8))
+      ).map(b => b.toString(16).padStart(2, "0")).join("");
+      // Call Bybit API
+      const url = "https://api.bybit.com/v5/account/wallet-balance?accountType=UNIFIED";
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "X-BAPI-API-KEY": apiKey,
+          "X-BAPI-SIGN": signature,
+          "X-BAPI-TIMESTAMP": timestamp,
+          "X-BAPI-RECV-WINDOW": recvWindow
+        }
+      });
+      const data = await res.json();
+      if (data.retCode !== 0) throw new Error(data.retMsg || "API error");
+      // Find USDT balance
+      const usdt = data.result.list[0].totalEquity;
+      return Number(usdt).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
     }
 
     function placeOrder() {
