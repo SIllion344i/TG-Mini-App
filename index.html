@@ -20,6 +20,7 @@
       border-radius: 12px;
       padding: 24px;
       box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
     }
 
     .profile-pic {
@@ -112,15 +113,7 @@
     <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
     <div class="title">Grok 3 <span class="beta">beta</span></div>
 
-    <!-- API KEY/SECRET FIELDS -->
-    <div class="form-group">
-      <label for="api-key">Bybit API Key</label>
-      <input id="api-key" type="text" placeholder="Enter your Bybit API Key" autocomplete="off" />
-    </div>
-    <div class="form-group">
-      <label for="api-secret">Bybit API Secret</label>
-      <input id="api-secret" type="password" placeholder="Enter your Bybit API Secret" autocomplete="off" />
-    </div>
+    <!-- Save & Fetch Balance Button -->
     <button onclick="saveApiKeys()">Save & Fetch Balance</button>
     <div class="status" id="modal-status"></div>
 
@@ -188,14 +181,6 @@
     }
 
     async function saveApiKeys() {
-      const key = document.getElementById('api-key').value.trim();
-      const secret = document.getElementById('api-secret').value.trim();
-      if (!key || !secret) {
-        document.getElementById('modal-status').textContent = "Both fields required.";
-        document.getElementById('modal-status').style.color = "#ff4e4e";
-        return;
-      }
-
       document.getElementById('modal-status').textContent = "Fetching balance...";
       document.getElementById('modal-status').style.color = "#00f2fe";
 
