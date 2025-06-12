@@ -2,22 +2,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Trading Mini App</title>
+  <title>Bybit Trading Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-    button { padding: 10px 20px; font-size: 16px; }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; background: #f7f7f7; }
+    .panel { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; display: inline-block; padding: 32px 24px; }
+    input, select, button { margin: 8px; padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #007aff; color: #fff; border: none; cursor: pointer; }
+    button:disabled { background: #aaa; }
+    .status { margin-top: 18px; min-height: 32px; }
+    .row { margin-bottom: 16px; }
+    .label { display: inline-block; width: 120px; text-align: right; margin-right: 8px; }
   </style>
 </head>
 <body>
-  <h1>Welcome, <span id="tg-username"></span>!</h1>
-  <button onclick="sendData()">Send Data to Bot</button>
+  <div class="panel">
+    <h2>Bybit Trading Panel</h2>
+    <div class="row">
+      <span class="label">Symbol:</span>
+      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" />
+    </div>
+    <div class="row">
+      <span class="label">Side:</span>
+      <select id="side">
+        <option value="Buy">Buy</option>
+        <option value="Sell">Sell</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="label">Order Type:</span>
+      <select id="orderType" onchange="togglePriceInput()">
+        <option value="Market">Market</option>
+        <option value="Limit">Limit</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="label">Quantity:</span>
+      <input id="qty" type="number" placeholder="Quantity" min="0.001" step="0.001" />
+    </div>
+    <div class="row" id="priceRow" style="display:none;">
+      <span class="label">Limit Price:</span>
+      <input id="price" type="number" placeholder="Limit Price" step="0.01" />
+    </div>
+    <div class="row">
+      <button onclick="placeOrder()">Place Order</button>
+    </div>
+    <div class="row">
+      <button onclick="getPrice()">Get Price</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
-    document.getElementById('tg-username').textContent = tg.initDataUnsafe.user?.username || 'Trader';
-    function sendData() {
-      tg.sendData('Hello from the Mini App!');
+
+    function togglePriceInput() {
+      const orderType = document.getElementById('orderType').value;
+      document.getElementById('priceRow').style.display = orderType === 'Limit' ? '' : 'none';
+    }
+
+    function placeOrder() {
+      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+      const side = document.getElementById('side').value;
+      const qty = document.getElementById('qty').value;
+      const orderType = document.getElementById('orderType').value;
+      const price = document.getElementById('price').value;
+
+      if (!symbol || !qty || (orderType === 'Limit' && !price)) {
+        document.getElementById('status').textContent = 'Please fill all required fields.';
+        return;
+      }
+
+      tg.sendData(JSON.stringify({
+        action: 'placeOrder',
+        symbol,
+        side,
+        qty,
+        orderType,
+        price: orderType === 'Limit' ? price : undefined
+      }));
+      document.getElementById('status').textContent = 'Order sent to bot...';
+    }
+
+    function getPrice() {
+      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+      if (!symbol) {
+        document.getElementById('status').textContent = 'Enter a symbol.';
+        return;
+      }
+      tg.sendData(JSON.stringify({
+        action: 'getPrice',
+        symbol
+      }));
+      document.getElementById('status').textContent = 'Price request sent to bot...';
     }
   </script>
 </body>
