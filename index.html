@@ -12,7 +12,6 @@
       color: #fff;
       padding: 20px;
     }
-
     .panel {
       max-width: 500px;
       margin: 0 auto;
@@ -21,7 +20,6 @@
       padding: 24px;
       box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
     }
-
     .profile-pic {
       width: 60px;
       height: 60px;
@@ -31,13 +29,11 @@
       object-fit: cover;
       border: 2px solid #00f2fe;
     }
-
     .title {
       text-align: center;
       font-size: 24px;
       margin-bottom: 8px;
     }
-
     .beta {
       background-color: #00f2fe;
       color: #000;
@@ -47,17 +43,14 @@
       margin-left: 6px;
       vertical-align: middle;
     }
-
     .form-group {
       margin-bottom: 16px;
     }
-
     .form-group label {
       display: block;
       margin-bottom: 6px;
       color: #ccc;
     }
-
     .form-group input,
     .form-group select {
       width: 100%;
@@ -68,7 +61,6 @@
       background-color: #2c2c2c;
       color: #fff;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -80,17 +72,14 @@
       cursor: pointer;
       margin-bottom: 12px;
     }
-
     button:hover {
       background-color: #00c3d3;
     }
-
     .status {
       text-align: center;
       font-size: 14px;
       margin-bottom: 12px;
     }
-
     .stat-box {
       background-color: #2a2a2a;
       padding: 12px;
@@ -99,29 +88,23 @@
       text-align: center;
       font-weight: bold;
     }
-
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
-
     .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #00f2fe;
+      border: 3px solid #444;
+      border-top: 3px solid #00f2fe;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 6px;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
     }
-
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -130,20 +113,21 @@
     <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
     <div class="title">Grok 3 <span class="beta">beta</span></div>
 
-    <!-- WALLET STATS -->
+    <button onclick="fetchBalance()">Fetch Balance</button>
+    <div class="status" id="modal-status"></div>
+
     <div class="stat-box" style="margin-bottom: 12px;">
-      Wallet Balance: 
-      <span id="wallet-balance"><span class="spinner"></span></span>
+      Wallet Balance: <span id="wallet-balance">$0.00</span>
     </div>
     <div class="stat-grid">
       <div class="stat-box">
         Win Rate (%): <span id="win-rate">0%</span>
       </div>
       <div class="stat-box">
-        Profit ($): <span id="profit">+$0.00</span>
+        Profit ($): <span>+$61,140</span>
       </div>
       <div class="stat-box" style="grid-column: span 2;">
-        Volume ($): <span id="volume">$0.00</span>
+        Volume ($): <span>$2,755,632.35</span>
       </div>
     </div>
 
@@ -195,18 +179,21 @@
     }
 
     async function fetchBalance() {
+      const modal = document.getElementById("modal-status");
+      modal.innerHTML = '<div class="spinner"></div>';
+
       try {
         const res = await fetch('/api/bybit');
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Failed");
-        const formatted = "$" + Number(json.balance).toLocaleString(undefined, { minimumFractionDigits: 2 });
-        document.getElementById('wallet-balance').textContent = formatted;
+
+        document.getElementById('wallet-balance').textContent = "$" + Number(json.balance).toLocaleString(undefined, {minimumFractionDigits:2});
         document.getElementById('win-rate').textContent = "100%";
-        document.getElementById('profit').textContent = "+$61,140";
-        document.getElementById('volume').textContent = "$2,755,632.35";
+        modal.textContent = "Balance updated!";
+        modal.style.color = "#00f2fe";
       } catch (e) {
-        document.getElementById('wallet-balance').textContent = "$0.00";
-        showStatus("Balance load failed: " + e.message, true);
+        modal.textContent = "Balance load failed: " + e.message;
+        modal.style.color = "#ff4e4e";
       }
     }
 
@@ -244,8 +231,6 @@
 
       showStatus("Requesting price...");
     }
-
-    window.addEventListener('DOMContentLoaded', fetchBalance);
   </script>
 </body>
 </html>
