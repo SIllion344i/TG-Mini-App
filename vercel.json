@@ -1,11 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "api/bybit.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
-  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "routes": [
-    { "src": "/api/bybit", "dest": "api/bybit.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" }
   ]
 }
