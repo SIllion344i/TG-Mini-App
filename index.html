@@ -20,7 +20,6 @@
       border-radius: 12px;
       padding: 24px;
       box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
-      box-sizing: border-box;
     }
 
     .profile-pic {
@@ -113,23 +112,19 @@
     <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
     <div class="title">Grok 3 <span class="beta">beta</span></div>
 
-    <!-- Save & Fetch Balance Button -->
-    <button onclick="saveApiKeys()">Save & Fetch Balance</button>
-    <div class="status" id="modal-status"></div>
-
     <!-- WALLET STATS -->
     <div class="stat-box" style="margin-bottom: 12px;">
-      Wallet Balance: <span id="wallet-balance">$128,631.25</span>
+      Wallet Balance: <span id="wallet-balance">$0.00</span>
     </div>
     <div class="stat-grid">
       <div class="stat-box">
-        Win Rate (%): <span>100%</span>
+        Win Rate (%): <span id="win-rate">0%</span>
       </div>
       <div class="stat-box">
-        Profit ($): <span>+$61,140</span>
+        Profit ($): <span id="profit">+$0.00</span>
       </div>
       <div class="stat-box" style="grid-column: span 2;">
-        Volume ($): <span>$2,755,632.35</span>
+        Volume ($): <span id="volume">$0.00</span>
       </div>
     </div>
 
@@ -180,24 +175,6 @@
       status.innerHTML = `<span style="color:${isError ? '#ff4e4e' : '#00f2fe'}">${message}</span>`;
     }
 
-    async function saveApiKeys() {
-      document.getElementById('modal-status').textContent = "Fetching balance...";
-      document.getElementById('modal-status').style.color = "#00f2fe";
-
-      try {
-        const res = await fetch('/api/bybit');
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error || "Failed");
-
-        document.getElementById('wallet-balance').textContent = "$" + Number(json.balance).toLocaleString(undefined, {minimumFractionDigits:2});
-        document.getElementById('modal-status').textContent = "Balance updated!";
-        document.getElementById('modal-status').style.color = "#00f2fe";
-      } catch (e) {
-        document.getElementById('modal-status').textContent = "Failed: " + e.message;
-        document.getElementById('modal-status').style.color = "#ff4e4e";
-      }
-    }
-
     function placeOrder() {
       const symbol = document.getElementById("symbol").value.trim().toUpperCase();
       const side = document.getElementById("side").value;
@@ -232,6 +209,21 @@
 
       showStatus("Requesting price...");
     }
+
+    // Auto-fetch wallet balance on load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/bybit');
+        const json = await res.json();
+        if (res.ok && json.balance) {
+          document.getElementById('wallet-balance').textContent = "$" + Number(json.balance).toLocaleString(undefined, {minimumFractionDigits: 2});
+        } else {
+          console.error("Failed to fetch balance:", json.error);
+        }
+      } catch (e) {
+        console.error("Fetch error:", e.message);
+      }
+    });
   </script>
 </body>
 </html>
