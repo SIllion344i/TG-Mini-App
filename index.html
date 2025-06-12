@@ -1,26 +1,137 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Bybit Trading Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; background: #f7f7f7; }
-    .panel { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; display: inline-block; padding: 32px 24px; }
-    input, select, button { margin: 8px; padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #007aff; color: #fff; border: none; cursor: pointer; }
-    button:disabled { background: #aaa; }
-    .status { margin-top: 18px; min-height: 32px; }
-    .row { margin-bottom: 16px; }
-    .label { display: inline-block; width: 120px; text-align: right; margin-right: 8px; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+    }
+    .panel {
+      background: rgba(255,255,255,0.10);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 36px 28px 28px 28px;
+      width: 340px;
+      max-width: 95vw;
+      transition: box-shadow 0.3s;
+      will-change: transform;
+    }
+    .panel:active {
+      box-shadow: 0 4px 16px 0 rgba(31,38,135,0.27);
+    }
+    h2 {
+      color: #fff;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 1.5em;
+      text-shadow: 0 2px 8px #0006;
+    }
+    .row {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .label {
+      color: #fff;
+      font-size: 1em;
+      width: 110px;
+      text-align: right;
+      margin-right: 10px;
+      opacity: 0.85;
+      text-shadow: 0 1px 2px #0004;
+    }
+    input, select {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #222a;
+      font-size: 1em;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      outline: none;
+      width: 150px;
+      transition: border 0.2s;
+    }
+    input:focus, select:focus {
+      border: 1.5px solid #00f2fe;
+      background: rgba(255,255,255,0.22);
+    }
+    button {
+      width: 100%;
+      padding: 12px 0;
+      margin-top: 10px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #00f2fe44;
+      transition: background 0.2s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+    button:active {
+      transform: scale(0.97);
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    }
+    .glow {
+      animation: glow 1.5s infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 8px #00f2fe88, 0 0 16px #4facfe44; }
+      to   { box-shadow: 0 0 24px #00f2fecc, 0 0 32px #4facfe88; }
+    }
+    .status {
+      margin-top: 18px;
+      min-height: 32px;
+      color: #fff;
+      font-size: 1em;
+      text-align: center;
+      word-break: break-word;
+      text-shadow: 0 1px 2px #0006;
+    }
+    .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #fff3;
+      border-top: 3px solid #00f2fe;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    @media (max-width: 400px) {
+      .panel { padding: 18px 4vw; }
+      .label { font-size: 0.95em; width: 90px;}
+      input, select { width: 100px; font-size: 0.95em;}
+    }
   </style>
 </head>
 <body>
-  <div class="panel">
+  <div class="panel" id="panel">
     <h2>Bybit Trading Panel</h2>
     <div class="row">
       <span class="label">Symbol:</span>
-      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" />
+      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" autocomplete="off" />
     </div>
     <div class="row">
       <span class="label">Side:</span>
@@ -38,27 +149,44 @@
     </div>
     <div class="row">
       <span class="label">Quantity:</span>
-      <input id="qty" type="number" placeholder="Quantity" min="0.001" step="0.001" />
+      <input id="qty" type="number" placeholder="Quantity" min="0.001" step="0.001" autocomplete="off" />
     </div>
     <div class="row" id="priceRow" style="display:none;">
       <span class="label">Limit Price:</span>
-      <input id="price" type="number" placeholder="Limit Price" step="0.01" />
+      <input id="price" type="number" placeholder="Limit Price" step="0.01" autocomplete="off" />
     </div>
-    <div class="row">
-      <button onclick="placeOrder()">Place Order</button>
-    </div>
-    <div class="row">
-      <button onclick="getPrice()">Get Price</button>
-    </div>
+    <button class="glow" onclick="placeOrder()">Place Order</button>
+    <button style="margin-top:8px;" onclick="getPrice()">Get Price</button>
     <div class="status" id="status"></div>
   </div>
   <script>
+    // 3D tilt effect
+    const panel = document.getElementById('panel');
+    panel.addEventListener('mousemove', (e) => {
+      const rect = panel.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width/2;
+      const y = e.clientY - rect.top - rect.height/2;
+      panel.style.transform = `rotateY(${x/30}deg) rotateX(${-y/30}deg) scale(1.01)`;
+    });
+    panel.addEventListener('mouseleave', () => {
+      panel.style.transform = '';
+    });
+
     const tg = window.Telegram.WebApp;
     tg.ready();
 
     function togglePriceInput() {
       const orderType = document.getElementById('orderType').value;
       document.getElementById('priceRow').style.display = orderType === 'Limit' ? '' : 'none';
+    }
+
+    function showStatus(msg, loading=false, error=false) {
+      const status = document.getElementById('status');
+      if (loading) {
+        status.innerHTML = `<span class="spinner"></span><br>${msg}`;
+      } else {
+        status.innerHTML = `<span style="color:${error ? '#ff4e4e':'#00f2fe'}">${msg}</span>`;
+      }
     }
 
     function placeOrder() {
@@ -68,9 +196,14 @@
       const orderType = document.getElementById('orderType').value;
       const price = document.getElementById('price').value;
 
-      if (!symbol || !qty || (orderType === 'Limit' && !price)) {
-        document.getElementById('status').textContent = 'Please fill all required fields.';
-        return;
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
+        showStatus('Invalid symbol format.', false, true); return;
+      }
+      if (!qty || Number(qty) <= 0) {
+        showStatus('Enter a valid quantity.', false, true); return;
+      }
+      if (orderType === 'Limit' && (!price || Number(price) <= 0)) {
+        showStatus('Enter a valid limit price.', false, true); return;
       }
 
       tg.sendData(JSON.stringify({
@@ -81,20 +214,19 @@
         orderType,
         price: orderType === 'Limit' ? price : undefined
       }));
-      document.getElementById('status').textContent = 'Order sent to bot...';
+      showStatus('Order sent to bot...', true);
     }
 
     function getPrice() {
       const symbol = document.getElementById('symbol').value.trim().toUpperCase();
-      if (!symbol) {
-        document.getElementById('status').textContent = 'Enter a symbol.';
-        return;
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) {
+        showStatus('Invalid symbol format.', false, true); return;
       }
       tg.sendData(JSON.stringify({
         action: 'getPrice',
         symbol
       }));
-      document.getElementById('status').textContent = 'Price request sent to bot...';
+      showStatus('Price request sent to bot...', true);
     }
   </script>
 </body>
