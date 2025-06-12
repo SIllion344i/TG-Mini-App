@@ -170,4 +170,148 @@
 
     .status {
       margin-top: 16px;
-      text-align: center
+      text-align: center;
+      color: var(--text);
+      font-size: 0.95em;
+      min-height: 22px;
+    }
+
+    @media (max-width: 420px) {
+      .panel {
+        padding: 20px 16px;
+        border-radius: 16px;
+      }
+
+      h2 {
+        font-size: 1.4em;
+      }
+
+      input, select {
+        font-size: 0.95em;
+      }
+
+      button {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <!-- TOP BAR -->
+    <div class="header">
+      <div class="menu-icon">
+        <div></div>
+        <div></div>
+      </div>
+      <div class="title">Grok 3 <span class="beta">beta</span></div>
+      <img src="https://i.imgur.com/F4Ri5BM.jpeg" alt="profile" class="profile-pic" />
+    </div>
+
+    <!-- WALLET STATS -->
+    <div class="stat-box" style="margin-bottom: 12px;">
+      Wallet Balance: <span>$128,631.25</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box">
+        Win Rate (%): <span>100%</span>
+      </div>
+      <div class="stat-box">
+        Profit ($): <span>+$61,140</span>
+      </div>
+      <div class="stat-box" style="grid-column: span 2;">
+        Volume ($): <span>$2,755,632.35</span>
+      </div>
+    </div>
+
+    <!-- ORIGINAL FORM -->
+    <h2>Bybit Trading</h2>
+
+    <div class="form-group">
+      <label for="symbol">Symbol</label>
+      <input id="symbol" placeholder="e.g. BTCUSDT" value="BTCUSDT" />
+    </div>
+
+    <div class="form-group">
+      <label for="side">Side</label>
+      <select id="side">
+        <option value="Buy">Buy</option>
+        <option value="Sell">Sell</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="orderType">Order Type</label>
+      <select id="orderType" onchange="togglePriceInput()">
+        <option value="Market">Market</option>
+        <option value="Limit">Limit</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="qty">Quantity</label>
+      <input id="qty" type="number" placeholder="Amount" step="0.001" />
+    </div>
+
+    <div class="form-group" id="priceRow" style="display:none;">
+      <label for="price">Limit Price</label>
+      <input id="price" type="number" placeholder="Limit price" step="0.01" />
+    </div>
+
+    <button onclick="placeOrder()">Place Order</button>
+    <button onclick="getPrice()">Get Price</button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    function togglePriceInput() {
+      const type = document.getElementById("orderType").value;
+      document.getElementById("priceRow").style.display = type === "Limit" ? "block" : "none";
+    }
+
+    function showStatus(message, isError = false) {
+      const status = document.getElementById("status");
+      status.innerHTML = `<span style="color:${isError ? '#ff4e4e' : '#00f2fe'}">${message}</span>`;
+    }
+
+    function placeOrder() {
+      const symbol = document.getElementById("symbol").value.trim().toUpperCase();
+      const side = document.getElementById("side").value;
+      const qty = document.getElementById("qty").value;
+      const type = document.getElementById("orderType").value;
+      const price = document.getElementById("price").value;
+
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) return showStatus("Invalid symbol.", true);
+      if (!qty || Number(qty) <= 0) return showStatus("Enter a valid quantity.", true);
+      if (type === "Limit" && (!price || Number(price) <= 0)) return showStatus("Enter a valid price.", true);
+
+      tg.sendData(JSON.stringify({
+        action: "placeOrder",
+        symbol,
+        side,
+        qty,
+        orderType: type,
+        price: type === "Limit" ? price : undefined
+      }));
+
+      showStatus("Order sent to bot...");
+    }
+
+    function getPrice() {
+      const symbol = document.getElementById("symbol").value.trim().toUpperCase();
+      if (!symbol.match(/^[A-Z0-9]{3,15}$/)) return showStatus("Invalid symbol.", true);
+
+      tg.sendData(JSON.stringify({
+        action: "getPrice",
+        symbol
+      }));
+
+      showStatus("Requesting price...");
+    }
+  </script>
+</body>
+</html>
