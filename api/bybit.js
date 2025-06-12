@@ -1,10 +1,14 @@
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Only GET allowed' });
+    return res.status(405).json({ error: 'Only GET is allowed' });
   }
 
   const apiKey = process.env.BYBIT_API_KEY;
   const apiSecret = process.env.BYBIT_API_SECRET;
+
+  if (!apiKey || !apiSecret) {
+    return res.status(500).json({ error: 'API credentials not set' });
+  }
 
   const recvWindow = "5000";
   const timestamp = Date.now().toString();
@@ -28,9 +32,11 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    if (data.retCode !== 0) return res.status(400).json({ error: data.retMsg });
+    if (data.retCode !== 0) {
+      return res.status(400).json({ error: data.retMsg });
+    }
 
-    const balance = data.result.list[0].totalEquity;
+    const balance = parseFloat(data.result.list[0].totalEquity || 0);
     res.status(200).json({ balance });
   } catch (err) {
     res.status(500).json({ error: err.message || "Unknown error" });
